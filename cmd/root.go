@@ -1,8 +1,18 @@
 package cmd
 
 import (
+  "encoding/json"
   "github.com/spf13/cobra"
 )
+
+func ConvertToJson(data interface{}) (string, error) {
+  json, err := json.Marshal(data)
+  return string(json), err
+}
+
+func Execute() error {
+  return rootCmd.Execute()
+}
 
 var rootCmd = &cobra.Command{
   Use:   "log-forwarder",
@@ -12,8 +22,4 @@ var rootCmd = &cobra.Command{
   Run: func(cmd *cobra.Command, args []string) {
     // Do Stuff Here
   },
-}
-
-func Execute() error {
-  return rootCmd.Execute()
 }

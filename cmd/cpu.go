@@ -52,12 +52,12 @@ var cpuinfo = &cobra.Command {
 
   Use:   "cpuinfo",
   Short: "Return CPU metrics as a json string",
-  Long:  `Command should get linux / unix cpu and return it
-  in a JSON formatted string that can be consumed by fluentd`,
+  Long:  `Command should get linux / unix cpu and return it in a JSON formatted string that can be consumed by fluentd`,
 
   Run: func(cmd *cobra.Command, args []string) {
 
-    data := document{}
+    var data   document
+    var output []byte
 
     if info == true {
       data.Info = cpuInfo()
@@ -71,7 +71,7 @@ var cpuinfo = &cobra.Command {
       data.Time = cpuTime()
     }
 
-    output, _ := helpers.ConvertToJson(data)
+    output, _ = helpers.ConvertToJson(data)
     fmt.Print(string(output))
 
   },

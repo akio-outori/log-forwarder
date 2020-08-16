@@ -28,24 +28,20 @@ func init() {
   rootCmd.AddCommand(cpuinfo)
 }
 
-func cpuInfo() []cpu.InfoStat {
-  info, _ := cpu.Info()
-  return info
+func cpuInfo() ([]cpu.InfoStat, error) {
+  return cpu.Info()
 }
 
-func cpuPercent() []float64 {
-  percent, _ := cpu.Percent(0, percpu)
-  return percent
+func cpuPercent() ([]float64, error) {
+  return cpu.Percent(0, percpu)
 }
 
-func cpuTime() []cpu.TimesStat {
-  time, _ := cpu.Times(percpu)
-  return time
+func cpuTime() ([]cpu.TimesStat, error) {
+  return cpu.Times(percpu)
 }
 
-func format(data interface{}) []byte {
-  json, _ := helpers.ConvertToJson(data)
-  return json
+func format(data interface{}) ([]byte, error) {
+  return helpers.ConvertToJson(data)
 }
 
 var cpuinfo = &cobra.Command {
@@ -60,18 +56,18 @@ var cpuinfo = &cobra.Command {
     var output []byte
 
     if info == true {
-      data.Info = cpuInfo()
+      data.Info, _ = cpuInfo()
     }
 
     if percent == true {
-      data.Percent = cpuPercent()
+      data.Percent, _ = cpuPercent()
     }
 
     if cputime == true {
-      data.Time = cpuTime()
+      data.Time, _ = cpuTime()
     }
 
-    output, _ = helpers.ConvertToJson(data)
+    output, _ = format(data)
     fmt.Print(string(output))
 
   },

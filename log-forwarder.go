@@ -1,4 +1,4 @@
-package forwarder
+package main
 
 import "github.com/akio-outori/log-forwarder/cmd"
 

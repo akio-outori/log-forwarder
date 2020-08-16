@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/spf13/cobra"
   "github.com/shirou/gopsutil/cpu"
+  "github.com/akio-outori/log-forwarder/helpers"
 )
 
 var info    bool
@@ -19,23 +20,23 @@ func init() {
   rootCmd.AddCommand(cpuinfo)
 }
 
-func cpuInfo() string {
+func cpuInfo() []byte {
   info, _ := cpu.Info()
   return format(info)
 }
 
-func cpuPercent() string {
+func cpuPercent() []byte {
   percent, _ := cpu.Percent(0, percpu)
   return format(percent)
 }
 
-func cpuTime() string {
+func cpuTime() []byte {
   time, _ := cpu.Times(percpu)
   return format(time)
 }
 
-func format(data interface{}) string {
-  json, _ := ConvertToJson(data)
+func format(data interface{}) []byte {
+  json, _ := helpers.ConvertToJson(data)
   return json
 }
 
@@ -48,21 +49,26 @@ var cpuinfo = &cobra.Command {
 
   Run: func(cmd *cobra.Command, args []string) {
 
-    var output []string
+    var output []byte
+
+    var info_out    []cpu.InfoStat
+    var cputime_out []cpu.TimesStat
+    var percent_out []float64
 
     if info == true {
-      output = append(output, cpuInfo())
+      info_out = cpuInfo()
     }
 
     if percent == true {
-      output = append(output, cpuPercent())
+      percent_out = cpuPercent()
     }
 
     if cputime == true {
-      output = append(output, cpuTime())
+      cputime_out = cpuTime()
     }
 
-    fmt.Print(output)
+    output = SerializeJson(info_out, percent_out, cputime_out)
+    fmt.Print(string(output))
 
   },
 }

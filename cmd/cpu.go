@@ -8,10 +8,12 @@ import (
 
 var info bool
 var percent bool
+var percpu bool
 
 func init() {
-  cpuinfo.Flags().BoolVarP(&info, "info", "i", false, "whether to include cpuinfo in the final result")
+  cpuinfo.Flags().BoolVarP(&info,    "info",    "i", false, "whether to include cpuinfo in the final result")
   cpuinfo.Flags().BoolVarP(&percent, "percent", "p", false, "whether to include cpu usage percent in final result")
+  cpuinfo.Flags().BoolVarP(&percpu,  "percpu",  "c", false,  "whether to split metrics per cpu core")
   rootCmd.AddCommand(cpuinfo)
 }
 
@@ -22,10 +24,13 @@ func cpuInfo() string {
 }
 
 func cpuPercent() string {
-  info, _ := cpu.Percent(0, true)
+  info, _ := cpu.Percent(0, percpu)
   json, _ := ConvertToJson(info)
   return json
 }
+
+//func format(data interface{}) string {
+//}
 
 var cpuinfo = &cobra.Command {
 

@@ -2,9 +2,12 @@ package helpers
 
 import "encoding/json"
 
-func SerializeJson(data... []byte) [][]byte {
-  var output [][]byte
-  output = append(output, data...)
+func SerializeJson(data [][]byte) []string {
+  var output []string
+
+  for _, doc := range data {
+    output = append(output, string(doc))
+  }
   return output
 }
 

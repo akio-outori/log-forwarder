@@ -12,6 +12,14 @@ var percent bool
 var cputime bool
 var percpu  bool
 
+type document struct {
+  Hostname string
+  Role     string
+  Info     []cpu.InfoStat
+  Percent  []float64
+  Time     []cpu.TimesStat
+}
+
 func init() {
   cpuinfo.Flags().BoolVarP(&info,    "info",    "i", false, "whether to include cpuinfo in the final result")
   cpuinfo.Flags().BoolVarP(&percent, "percent", "p", false, "whether to include cpu usage percent in final result")
@@ -20,19 +28,19 @@ func init() {
   rootCmd.AddCommand(cpuinfo)
 }
 
-func cpuInfo() []byte {
+func cpuInfo() []cpu.InfoStat {
   info, _ := cpu.Info()
-  return format(info)
+  return info
 }
 
-func cpuPercent() []byte {
+func cpuPercent() []float64 {
   percent, _ := cpu.Percent(0, percpu)
-  return format(percent)
+  return percent
 }
 
-func cpuTime() []byte {
+func cpuTime() []cpu.TimesStat {
   time, _ := cpu.Times(percpu)
-  return format(time)
+  return time
 }
 
 func format(data interface{}) []byte {
@@ -49,25 +57,21 @@ var cpuinfo = &cobra.Command {
 
   Run: func(cmd *cobra.Command, args []string) {
 
-    var output []byte
-
-    var info_out    []cpu.InfoStat
-    var cputime_out []cpu.TimesStat
-    var percent_out []float64
+    data := document{}
 
     if info == true {
-      info_out = cpuInfo()
+      data.Info = cpuInfo()
     }
 
     if percent == true {
-      percent_out = cpuPercent()
+      data.Percent = cpuPercent()
     }
 
     if cputime == true {
-      cputime_out = cpuTime()
+      data.Time = cpuTime()
     }
 
-    output = SerializeJson(info_out, percent_out, cputime_out)
+    output, _ := helpers.ConvertToJson(data)
     fmt.Print(string(output))
 
   },

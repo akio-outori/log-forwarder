@@ -1,0 +1,5 @@
+---
+
+hostname: "localhost"
+role: "Dev"
+config: "config.yaml"

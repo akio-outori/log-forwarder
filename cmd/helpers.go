@@ -1,6 +1,7 @@
 package cmd
 
 import (
+  "encoding/json"
   "github.com/spf13/viper"
 )
 
@@ -26,4 +27,15 @@ func initConfig() *viper.Viper {
   }
 
   return config
+}
+
+func checkError(err error) {
+  if err != nil {
+    panic(err)
+  }
+}
+
+func convertToJson(response interface{}) ([]byte, error) {
+  json, err := json.Marshal(response)
+  return json, err
 }

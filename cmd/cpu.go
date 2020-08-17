@@ -4,7 +4,6 @@ import (
   "fmt"
   "github.com/spf13/cobra"
   "github.com/shirou/gopsutil/cpu"
-  "github.com/akio-outori/log-forwarder/helpers"
 )
 
 var info     bool
@@ -12,10 +11,10 @@ var percent  bool
 var cputime  bool
 var percpu   bool
 
-type data struct {
-  Hostname string
-  Role     string
-  Config   string
+type cpudata struct {
+
+  // Import global data 
+  data
 
   Info     []cpu.InfoStat
   Percent  []float64
@@ -42,23 +41,19 @@ func cpuTime() ([]cpu.TimesStat, error) {
   return cpu.Times(percpu)
 }
 
-func format(response interface{}) ([]byte, error) {
-  return helpers.ConvertToJson(response)
-}
-
 var cpuinfo = &cobra.Command {
   Use:   "cpuinfo",
   Short: "Return CPU metrics as a json string",
   Long:  `Command should get linux / unix cpu and return it in a JSON formatted string that can be consumed by fluentd`,
   Run:   func(cmd *cobra.Command, args []string) {
 
-    var response data
+    var response cpudata
     var json     []byte
 
-    //config            := helpers.InitConfig()
-    //response.hostname  = config.GetString("hostname")
-    //response.role      = config.GetString("role")
-    //response.config    = config.GetString("config")
+    config            := initConfig()
+    response.Hostname  = config.GetString("Hostname")
+    response.Role      = config.GetString("Role")
+    response.Config    = config.GetString("Config")
 
     if info == true {
       response.Info, _ = cpuInfo()
@@ -72,7 +67,7 @@ var cpuinfo = &cobra.Command {
       response.Time, _ = cpuTime()
     }
 
-    json, _ = format(response)
+    json, _ = convertToJson(response)
     fmt.Println(string(json))
   },
 }

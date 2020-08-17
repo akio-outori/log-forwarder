@@ -1,16 +1,16 @@
-package helpers
+package cmd
 
 import (
   "github.com/spf13/viper"
 )
 
-type response struct {
-  hostname string
-  role     string
-  config   string
+type data struct {
+  Hostname string
+  Role     string
+  Config   string
 }
 
-func InitConfig() *viper.Viper {
+func initConfig() *viper.Viper {
 
   config := viper.New()
   config.SetDefault("hostname", "undefined")

@@ -1,8 +1,8 @@
-package helpers
+package cmd
 
 import "encoding/json"
 
-func ConvertToJson(response interface{}) ([]byte, error) {
+func convertToJson(response interface{}) ([]byte, error) {
   json, err := json.Marshal(response)
   return json, err
 }

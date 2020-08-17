@@ -8,7 +8,6 @@ import (
 
 var swap bool
 var vm   bool
-var vmex bool
 
 type memdata struct {
 
@@ -17,13 +16,11 @@ type memdata struct {
 
   Swap            *mem.SwapMemoryStat
   VirtualMemory   *mem.VirtualMemoryStat
-  VirtualMemoryEx *mem.VirtualMemoryExStat
 }
 
 func init() {
   meminfo.Flags().BoolVarP(&swap, "swap", "s", false, "whether to collect swap information")
   meminfo.Flags().BoolVarP(&vm,   "vm",   "m", false, "whether to collect memory information")
-  meminfo.Flags().BoolVarP(&vmex, "ex",   "e", false, "whether to collect extended memory information")
   rootCmd.AddCommand(meminfo)
 }
 
@@ -33,10 +30,6 @@ func swapMemory() (*mem.SwapMemoryStat, error) {
 
 func virtualMemory() (*mem.VirtualMemoryStat, error) {
   return mem.VirtualMemory()
-}
-
-func virtualMemoryEx() (*mem.VirtualMemoryExStat, error) {
-  return mem.VirtualMemoryEx()
 }
 
 var meminfo = &cobra.Command {
@@ -59,10 +52,6 @@ var meminfo = &cobra.Command {
 
     if vm == true {
       response.VirtualMemory, _ = virtualMemory()
-    }
-
-    if vmex == true {
-      response.VirtualMemoryEx, _ = virtualMemoryEx()
     }
 
     json, _ = convertToJson(response)
